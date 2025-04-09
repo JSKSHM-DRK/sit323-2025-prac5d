@@ -77,5 +77,5 @@ This document outlines the steps taken to publish a Dockerized microservice to a
 * This task was completed using Google Cloud Artifact Registry for container image storage.
 * All `gcloud` commands were executed in the terminal after installing and configuring the Google Cloud SDK.
 * Ensure that the Google Cloud Project ID and Artifact Registry location are correctly set in the commands.
-* The Docker image was tagged and pushed according to the requirements of the assignment to a private container registry on GCP[cite: 2, 3, 4, 6].
-* The successful execution of `docker run` confirms the image's viability for deployment[cite: 7].
+* The Docker image was tagged and pushed according to the requirements of the assignment to a private container registry on GCP.
+* The successful execution of `docker run` confirms the image's viability for deployment.
