@@ -1,85 +1,81 @@
-# **Calculator Microservice**
+##  Task: Dockerization - Publishing the microservice into the cloud
 
-## Overview
+This document outlines the steps taken to publish a Dockerized microservice to a private container registry on Google Cloud Platform (GCP). This task involves containerizing a microservice using Docker and pushing it to Google Cloud Artifact Registry.
 
-### This project is a simple calculator microservice built using Node.js and Express. The service provides basic arithmetic operations through RESTful API endpoints.
+##  Prerequisites
 
-## Features
+* Google Cloud Platform (GCP) account and project
+* Google Cloud SDK (gcloud CLI) installed and configured
+* Docker installed
+* Git
 
-- Supports addition, subtraction, multiplication, and division
+##  Steps
 
-- Handles errors gracefully (e.g., invalid inputs, division by zero)
+1.  **Created a Private Container Registry on Google Cloud**
 
-- Provides meaningful error messages
+    * We used Google Cloud Artifact Registry to host the Docker image.
+    * The following `gcloud` command was used to create the repository:
 
-- Lightweight and easy to deploy
+        ```bash
+        gcloud artifacts repositories create my-docker-repo \
+        --repository-format=docker \
+        --location=australia-southeast1
+        ```
 
-## Prerequisites
+        * Repository Name: `my-docker-repo`
+        * Location: `australia-southeast1`
 
-### Ensure you have the following installed before running the project:
+    * Alternatively, this could be done through the Google Cloud Console by navigating to Artifact Registry and using the "Create Repository" workflow.
 
-- Node.js: Download here
+2.  **Authenticated Docker to GCP**
 
-- Git: Download here
+    * Docker was authenticated with GCP using the `gcloud auth configure-docker` command:
 
-## Setup and Installation
+        ```bash
+        gcloud auth configure-docker australia-southeast1-docker.pkg.dev
+        ```
 
-### Follow these steps to set up and run the microservice:
+        * This command configures Docker to use the credentials provided by the Google Cloud SDK to authenticate with Artifact Registry in the `australia-southeast1` region.
 
-1. Clone the Repository
+3.  **Tagged the Docker Image**
 
-- git clone https://github.com/username/sit323-2025-prac4p.git
-- cd sit323-2025-prac4p
+    * The local Docker image was tagged to match the Artifact Registry repository:
 
-2. Install Dependencies
+        ```bash
+        docker tag j_skshm/server.js:latest australia-southeast1-docker.pkg.dev/sit323-25t1-jhamb-35c663a/my-docker-repo/j_skshm/server.js:latest
+        ```
 
-- npm install
+        * `sit323-25t1-jhamb-35c663a` is the Google Cloud Project ID.
+        * `j_skshm/server.js:latest` is the local Docker image name and tag (as shown in the provided screenshot)[cite: 1].
 
-3. Run the Microservice
+4.  **Pushed the Image to the Registry**
 
-- node server.js
+    * The tagged image was pushed to Artifact Registry using the `docker push` command:
 
-### The service will be available at: http://localhost:3000
+        ```bash
+        docker push australia-southeast1-docker.pkg.dev/sit323-25t1-jhamb-35c663a/my-docker-repo/j_skshm/server.js:latest
+        ```
 
-## API Endpoints
+5.  **Verified the Published Image**
 
-All operations are performed via GET requests with query parameters num1 and num2.
-| Endpoint | Description | Example |
-|----------|------------|---------|
-| `/add` | Adds two numbers | `/add?num1=5&num2=3` |
-| `/subtract` | Subtracts two numbers | `/subtract?num1=10&num2=4` |
-| `/multiply` | Multiplies two numbers | `/multiply?num1=6&num2=7` |
-| `/divide` | Divides two numbers | `/divide?num1=20&num2=5` |
+    * To ensure the image was successfully pushed and could be retrieved, it was pulled and run from Artifact Registry:
 
+        ```bash
+        docker pull australia-southeast1-docker.pkg.dev/sit323-25t1-jhamb-35c663a/my-docker-repo/j_skshm/server.js:latest
+        docker run australia-southeast1-docker.pkg.dev/sit323-25t1-jhamb-35c663a/my-docker-repo/j_skshm/server.js:latest
+        ```
 
-## Error Handling
+    * The microservice started correctly, confirming the successful push and pull.
 
-- Invalid Input: If num1 or num2 are missing or non-numeric, the service returns:
+##  Repository Details
 
-    { "error": "Invalid input. Please provide two numbers." }
+* GitHub Repository URL: `https://github.com/j_skshm/sit323-2025-prac5d`
+* Google Cloud Artifact Registry Repository: `australia-southeast1-docker.pkg.dev/sit323-25t1-jhamb-35c663a/my-docker-repo`
 
-- Division by Zero: If num2 is 0 in a division request, the service returns:
+##  Notes
 
-    { "error": "Division by zero is not allowed." }
-
-- Unsupported Routes: If an unknown endpoint is accessed, the service returns:
-
-    { "error": "Endpoint not found" }
-
-## Contributing
-
-- Fork the repository
-
-- Create a new branch (git checkout -b feature-branch)
-
-- Commit your changes (git commit -m "Added a new feature")
-
-- Push to the branch (git push origin feature-branch)
-
-- Open a Pull Request
-
-
-## Author: **Saksham**
-
-### GitHub: https://github.com/JSKSHM-DRK
-
+* This task was completed using Google Cloud Artifact Registry for container image storage.
+* All `gcloud` commands were executed in the terminal after installing and configuring the Google Cloud SDK.
+* Ensure that the Google Cloud Project ID and Artifact Registry location are correctly set in the commands.
+* The Docker image was tagged and pushed according to the requirements of the assignment to a private container registry on GCP[cite: 2, 3, 4, 6].
+* The successful execution of `docker run` confirms the image's viability for deployment[cite: 7].
